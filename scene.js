@@ -128,7 +128,7 @@ function createBkgScene() {
 
     bkgScene.scene.add(bkgScene.room);
 
-    bkgScene.mainLight = new THREE.PointLight(0xffffff, 0.04, 0, 2);
+    bkgScene.mainLight = new THREE.PointLight(0xffffff, 0.05, 0, 2);
 
     bkgScene.scene.add(bkgScene.mainLight);
 
@@ -162,20 +162,11 @@ function createBkgScene() {
 
 
 
-function buildScene(material,material2) {
+function buildScene() {
 
     createLights();
 
     scene.background=createBkgScene();
-
-    const geometry = new THREE.PlaneGeometry(1,1, 400,400);
-    const surf = new THREE.Mesh(geometry, material);
-    scene.add(surf);
-
-    const geometry2 = new THREE.PlaneGeometry(1,1, 400,400);
-    const surf2 = new THREE.Mesh(geometry2, material2);
-    scene.add(surf2);
-
 
     const light = new THREE.AmbientLight(0x404040); // soft white light
     scene.add(light);
@@ -183,7 +174,6 @@ function buildScene(material,material2) {
     const dlight = new THREE.DirectionalLight(0xffffff);
     dlight.position.set(5, 5, 5);
     scene.add(dlight);
-
 }
 
 

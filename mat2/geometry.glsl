@@ -219,6 +219,7 @@ float rV=0.18736069442342;
 
 
 
+
 vec4 trefoil(float t){
     //gives the trefoil satisfying
     //u^3=27v^2 in C2
@@ -350,7 +351,7 @@ vec3 displace(vec3 params){
     //params arive in (-0.5,0.5)^2: need to rescale
     params+=vec3(0.5,0.5,0.);
     //now in [0,1]^2: scale corrrectly for torus:
-    float t=4.*PI*params.x;
+    float t=2.*PI*params.x;
     float s=2.*PI*params.y;
     vec4 p;
 

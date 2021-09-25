@@ -21,9 +21,9 @@ function createCSM(vertexShader,uniformList,properties,maps) {
         uniforms: uniformList,
 
         //other
-        passthrough: {
-            wireframe: false,
-        },
+        // passthrough: {
+        //     wireframe: false,
+        // },
     });
 
     //update the properties of the material
@@ -61,15 +61,19 @@ function createTexM(shaderCode,uniformList){
 
 function updateUniforms(material,uniformList,time){
 
-    //update the time uniform
-    material.uniforms.time.value=time;
-
-    //update the ui properties
-    for (const key in uniformList) {
-        if(ui[`${key}`]!=undefined) {//if the thing exists in the UI
-            material.uniforms[`${key}`].value = ui[`${key}`];
+  //  if(material.uniforms!=undefined) {
+        //update the time uniform
+        if (material.uniforms.time != undefined) {
+            material.uniforms.time.value = time;
         }
-    }
+
+        //update the ui properties
+        for (const key in uniformList) {
+            if (ui[`${key}`] != undefined) {//if the thing exists in the UI
+                material.uniforms[`${key}`].value = ui[`${key}`];
+            }
+        }
+   // }
 
 
 }

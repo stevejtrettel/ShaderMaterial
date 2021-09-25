@@ -219,6 +219,8 @@ float rV=0.18736069442342;
 
 
 
+
+
 vec4 trefoil(float t){
     //gives the trefoil satisfying
     //u^3=27v^2 in C2
@@ -346,6 +348,9 @@ vec4 trefoilSurface(float t, float s){
 
 
 vec3 displace(vec3 params){
+
+    rU=sqrt(1.-amplitude);
+    rV=sqrt(amplitude);
 
     //params arive in (-0.5,0.5)^2: need to rescale
     params+=vec3(0.5,0.5,0.);
