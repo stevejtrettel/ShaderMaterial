@@ -54,11 +54,6 @@ let time=0.;
        renderer.render(scene, camera);
 
 
-
-
-
-
-
       updateProperties(vertMat2,mat2.properties);
       updateUniforms(vertMat2,mat2.vertexUniforms,time);
       updateUniforms(texMat2,mat2.fragmentUniforms,time);
@@ -130,16 +125,14 @@ loadShadersCSM(mat1.vertPaths).then((vertCode) => {
     vertMat2=createCSM(vertCode2,mat2.vertexUniforms,mat2.properties,mat2.maps);
 
 
-                const geometry2 = new THREE.PlaneGeometry(1,1, 30,50);
-                const surf2 = new THREE.Mesh(geometry2, vertMat2);
-                scene.add(surf2);
+    const geometry2 = new THREE.PlaneGeometry(1,1, 500,100);
+    const surf2 = new THREE.Mesh(geometry2, vertMat2);
+    scene.add(surf2);
 
 
-    const geometry = new THREE.PlaneGeometry(1,1, 300,200);
+    const geometry = new THREE.PlaneGeometry(1,1, 500,100);
     const surf = new THREE.Mesh(geometry, vertMat);
     scene.add(surf);
-
-
 
 
                 animate();
