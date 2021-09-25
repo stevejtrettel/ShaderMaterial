@@ -162,18 +162,19 @@ function createBkgScene() {
 
 
 
-function buildScene(material) {
+function buildScene(material,material2) {
 
     createLights();
 
     scene.background=createBkgScene();
 
     const geometry = new THREE.PlaneGeometry(1,1, 400,400);
-//new THREE.SphereGeometry(5, 64, 64);
-
-
     const surf = new THREE.Mesh(geometry, material);
     scene.add(surf);
+
+    const geometry2 = new THREE.PlaneGeometry(1,1, 400,400);
+    const surf2 = new THREE.Mesh(geometry2, material2);
+    scene.add(surf2);
 
 
     const light = new THREE.AmbientLight(0x404040); // soft white light

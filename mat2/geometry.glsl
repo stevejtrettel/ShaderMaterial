@@ -355,7 +355,7 @@ vec3 displace(vec3 params){
     vec4 p;
 
     //get the point on the surface:
-    p=trefoilSurface(t, s);
+    p=hopfSurface(t, s);
 
     //project to R3:
     vec3 q=combinedProj(p);

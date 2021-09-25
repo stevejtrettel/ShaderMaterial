@@ -12,6 +12,8 @@ import{createCSM,createTexM,updateUniforms,updateProperties} from "./customMat.j
 
 import{mat1} from "./mat1/properties.js";
 
+import{mat2} from "./mat2/properties.js";
+
 
 
 import {
@@ -58,14 +60,16 @@ let time=0.;
 
 
 //running things:
-let vertMat,texMat;
-let texScene;
+let vertMat,texMat,texScene;
+let vertMat2,texMat2,texScene2;
+
 
 
 
 loadShadersCSM(mat1.vertPaths).then((vertCode) => {
     assembleShaderCode(mat1.fragPaths).then((fragCode)=>{
-
+        loadShadersCSM(mat2.vertPaths).then((vertCode2) => {
+            assembleShaderCode(mat2.fragPaths).then((fragCode2)=>{
 
         createUI();
 
@@ -76,6 +80,9 @@ loadShadersCSM(mat1.vertPaths).then((vertCode) => {
         //scene making texture
         texMat=createTexM(fragCode,mat1.fragmentUniforms);
         texScene=createFragmentScene(texMat);
+
+        texMat2=createTexM(fragCode2,mat2.fragmentUniforms);
+        texScene2=createFragmentScene(texMat2);
 
     //MAIN SCENE STUFF
 
@@ -88,12 +95,22 @@ loadShadersCSM(mat1.vertPaths).then((vertCode) => {
         map:shaderTex.texture,
     }
 
-     vertMat=createCSM(vertCode,mat1.vertexUniforms,mat1.properties,mat1.maps);
+    mat2.maps={
+        envMap:env,
+        envMapIntensity:1.,
+        map:shaderTex.texture,
+    }
+
+
+    vertMat=createCSM(vertCode,mat1.vertexUniforms,mat1.properties,mat1.maps);
+    vertMat2=createCSM(vertCode2,mat2.vertexUniforms,mat2.properties,mat2.maps);
 
      buildScene(vertMat);
 
     animate();
 
+            });
+        });
 
     });
 });
