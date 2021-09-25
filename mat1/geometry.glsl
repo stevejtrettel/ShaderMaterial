@@ -144,6 +144,7 @@ vec2 sphereCurve(float t){
     // float phi=2.+0.5*(1.+sin(uTime))*sin(3.*t);
 
     float phi=1.+amplitude*(1.+0.3*sin(time))*sin(n*t+0.3*cos(time)+0.3*time);
+   // float phi=1.+amplitude+0.3*sin(n*t);
 
     return vec2(phi,t);
 }
