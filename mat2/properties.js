@@ -55,16 +55,16 @@ let fragmentUniforms={
 //these file names need to be relative to the main folder, where they are called in main.js
 
 const vertPaths = {
-    defines: './mat1/vertex/uniforms.glsl',
-    header: './mat1/geometry.glsl',
-    main: './mat1/vertex/main.glsl',
+    defines: './mat2/vertex/uniforms.glsl',
+    header: './mat2/geometry.glsl',
+    main: './mat2/vertex/main.glsl',
 };
 
 
 const fragPaths={
-    uniforms:'./mat1/fragment/uniforms.glsl',
-    geometry:'./mat1/geometry.glsl',
-    main:'./mat1/fragment/main.glsl'
+    uniforms:'./mat2/fragment/uniforms.glsl',
+    geometry:'./mat2/geometry.glsl',
+    main:'./mat2/fragment/main.glsl'
 };
 
 

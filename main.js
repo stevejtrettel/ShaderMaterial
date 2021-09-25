@@ -25,6 +25,8 @@ import {
 
 
 let shaderTex=new THREE.WebGLRenderTarget(2048,2048);
+let shaderTex2=new THREE.WebGLRenderTarget(2048,2048);
+
 let time=0.;
 
 
@@ -36,17 +38,27 @@ let time=0.;
     requestAnimationFrame(animate);
     controls.update();
 
-      // //render the texture for the main surface
+      // //render the texture for the mfirst surface
        renderer.setRenderTarget(shaderTex);
        renderer.render(texScene,orthoCam);
+
+      //render the texture for the second surface
+      renderer.setRenderTarget(shaderTex2);
+      renderer.render(texScene2,orthoCam);
 
       //render the main scene
        renderer.setRenderTarget(null);
        renderer.render(scene, camera);
 
+
+
        updateProperties(vertMat,mat1.properties);
        updateUniforms(vertMat,mat1.vertexUniforms,time);
        updateUniforms(texMat,mat1.fragmentUniforms,time);
+
+      updateProperties(vertMat2,mat2.properties);
+      updateUniforms(vertMat2,mat2.vertexUniforms,time);
+      updateUniforms(texMat2,mat2.fragmentUniforms,time);
 
        time+=0.01;
   };
@@ -98,14 +110,14 @@ loadShadersCSM(mat1.vertPaths).then((vertCode) => {
     mat2.maps={
         envMap:env,
         envMapIntensity:1.,
-        map:shaderTex.texture,
+        map:shaderTex2.texture,
     }
 
 
     vertMat=createCSM(vertCode,mat1.vertexUniforms,mat1.properties,mat1.maps);
     vertMat2=createCSM(vertCode2,mat2.vertexUniforms,mat2.properties,mat2.maps);
 
-     buildScene(vertMat);
+     buildScene(vertMat,vertMat2);
 
     animate();
 
