@@ -384,6 +384,16 @@ vec2 cMult(vec2 z, vec2 w){
     return vec2(re,im);
 }
 
+vec2 cPow(vec2 z, float n){
+    float r=length(z);
+    float theta=atan(z.y,z.x);
+
+    float rNew=pow(r,n);
+    float tNew=n*theta;
+
+    return rNew*vec2(cos(tNew),sin(tNew));
+}
+
 //float depressedCubicRoot(float a, float b){
 //    //get the real root of the cubic x^3-ax-b=0;
 //
@@ -477,15 +487,8 @@ vec2 g2(mat2 B){
     //compute g2 for this using Fourier series
     vec2 res=g2(tau);
 
-    //now scale appropriately
-    //convert to polar
-    vec2 polar=fromZ(z);
-    float r=polar.x;
-    float t=polar.y;
-    //take to the fourth power
-    float r4=pow(r,4.);
-    //convert back
-    vec2 coef=toZ(vec2(r4,4.*t));
+    //get the correct rscaling
+    vec2 coef=cPow(z,4.);
 
     //multiply this coeficient by the result
     return cMult(coef, res);
@@ -496,7 +499,6 @@ vec2 g2(mat2 B){
 //compute g3 for a latitce given by a basis
 vec2 g3(mat2 B){
 
-
     vec2 z=B[0];
     vec2 w=B[1];
 
@@ -506,16 +508,8 @@ vec2 g3(mat2 B){
     //compute g2 for this using Fourier series
     vec2 res=g3(tau);
 
-    //now scale appropriately
-    //convert to polar
-    vec2 polar=fromZ(z);
-    float r=polar.x;
-    float t=polar.y;
-    //take to the fourth power
-    float r6=pow(r,6.);
-    //convert back
-    vec2 coef=toZ(vec2(r6,6.*t));
-
+    //get the correct rscaling
+    vec2 coef=cPow(z,6.);
 
     //multiply this coeficient by the result
     return cMult(coef, res);
@@ -539,8 +533,8 @@ vec4 latticeCoords(mat2 B){
     //get the scaling factor to bring this lattice back to the 3 sphere
     float lambda=depressedCubicRoot(a,b);
     float lambda32=pow(abs(lambda),3./2.);
-
-    return normalize(vec4(G2/lambda,G3/lambda32));
+    return normalize(vec4(G2,G3));
+   // return normalize(vec4(G2/lambda,G3/lambda32));
 }
 
 
@@ -645,7 +639,7 @@ vec3 displace(vec3 params){
     params+=vec3(0.5,0.5,0.);
     //now in [0,1]^2: scale corrrectly for torus:
     float reach=flowTime*amplitude;
-    float t=2.*reach*params.x-reach;
+    float t=reach*params.x;
     float s=2.*PI*params.y;
     vec4 p;
 
