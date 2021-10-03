@@ -214,6 +214,22 @@ vec4 hopfSurface(float t, float s){
 
 
 
+float theFunction(vec2 coords){
+    float x=coords.x;
+    float y=coords.y;
+    return 2.*amplitude*exp(-(x*x+y*y)/2.)+sin(time)*sin(x)*sin(y)/1.;
+}
+
+vec3 theGraph(vec2 coords){
+    float x=coords.x;
+    float y=coords.y;
+    float z=theFunction(coords);
+
+    return vec3(x,z,-y);
+}
+
+
+
 //=============================================
 //Functions to Export
 //=============================================
@@ -226,15 +242,18 @@ vec3 displace(vec3 params){
     //params arive in (-0.5,0.5)^2: need to rescale
     params+=vec3(0.5,0.5,0.);
     //now in [0,1]^2: scale orrrectly for torus:
-    float t=2.*PI*params.x;
-    float s=2.*PI*params.y;
-    vec4 p;
+    float t=2.*PI*params.x-PI;
+    float s=2.*PI*params.y-PI;
+    vec3 p;
 
-    //get the point on the surface:
-    p=hopfSurface(t, s);
+    p=theGraph(vec2(t,s));
+    return 3.*p;
 
-    //project to R3:
-    vec3 q=combinedProj(p);
-
-    return q;
+//    //get the point on the surface:
+//    p=hopfSurface(t, s);
+//
+//    //project to R3:
+//    vec3 q=combinedProj(p);
+//
+//    return q;
 }

@@ -84,7 +84,7 @@ loadShadersCSM(mat1.vertPaths).then((vertCode) => {
     //now can assign maps to the material
     mat1.maps={
         envMap:env,
-        envMapIntensity:1.,
+        envMapIntensity:1.5,
         map:shaderTex.texture,
     }
 
