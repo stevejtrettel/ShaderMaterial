@@ -57,8 +57,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     //now scale correctly
     float t=2.*PI*sq.x;
-    float s=2.*PI*sq.y;
+    float s=PI*sq.y;
 
+    //t is theta and s is phi in spherical coordinates
+    vec3 v=sphCoords(t,s);
+    float dist=50.*amplitude;
+    float dens=areaDensity(v,dist);
 
     float rad=0.8;
     float ang=sq.x;
@@ -87,7 +91,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 totalColor=color1+color2;
 
     vec3 color=(1.-hue)*ivory+hue*totalColor;
-
+    color=1.5*vec3(1./pow(abs(dens),0.3),1./pow(abs(dens),0.6),1./pow(abs(dens),0.8));
+    color+=color2;
     fragColor=vec4(color, 1);
 
 }

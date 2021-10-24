@@ -31,188 +31,117 @@ vec2 fromZ(vec2 q){
 }
 
 
-
-
-
 //=============================================
-//Components for working with points in R4
+//Components for building the surface
 //=============================================
 
-vec4 translateR4(vec4 p,vec4 q){
-    return p+q;
-}
-
-
-vec4 rotateR4(vec4 p,float x,float y,float u,float tumble){
-
-    float cS=cos(y+0.7*tumble);
-    float sS=sin(y+0.7*tumble);
-    float cT=cos(x+1.5*tumble);
-    float sT=sin(x+1.5*tumble);
-    float cU=cos(u-1.3*tumble);
-    float sU=sin(u-1.3*tumble);
-
-
-    mat4 rotMatY=mat4(
-    cS,0,-sS,0,
-    0,cS,0,-sS,
-    sS,0,cS,0,
-    0,sS,0,cS
-    );
-
-
-
-    mat4 rotMatX=mat4(
-    cT,0,0,-sT,
-    0,cT,-sT,0,
-    0,sT,cT,0,
-    sT,0,0,cT
-    );
-
-
-    mat4 rotMatU=mat4(
-    cU,-sU,0,0,
-    sU,cU,0,0,
-    0,0,cU,-sU,
-    0,0,sU,cU
-    );
-
-    vec4 q=rotMatU*rotMatY*rotMatX*p;
-
-    return q;
-}
-
-vec3 orthographicProj(vec4 p){
-    //JUST DELETE THE W COORDINATE
-    return p.xyz;
-}
-
-
-vec3 stereographicProj(vec4 p){
-
-    if(p.w>-0.999){
-
-        return p.xyz/(p.w+1.0);
-    }
-    else{//delete the triangle
-        return vec3(0./0.);
-    }
-}
-
-
-vec3 perspectiveProj(vec4 p){
-    vec4 offset=vec4(0,0,0,2.);
-    p=p+offset;
-
-    return 2.*p.xyz/p.w;
-
-}
-
-
-vec3 combinedProj(vec4 v){
-
-    //rotate in R4;
-    v=rotateR4(v,PI/2.*roty, PI/2.*rotx,PI/2.*rotu,tumble*time);
-
-    //project to R3
-    if(proj==0){
-        return 3.*stereographicProj(v);
-    }
-    if(proj==1){
-        return 3.*perspectiveProj(v);
-    }
-    else{
-        return 3.*orthographicProj(v);
-    }
-}
-
-
-
-
-//=============================================
-//Functions to Export: Graping Z^n in R4
-//=============================================
-
-//=============================================
-//Hopf Tori From Curve
-//=============================================
-
-
-//get a point on the curve
-vec2 sphereCurve(float t){
-
-    // float phi=2.+0.5*(1.+sin(uTime))*sin(3.*t);
-
-    float phi=1.+amplitude*(1.+0.3*sin(time))*sin(n*t+0.3*cos(time)+0.3*time);
-   // float phi=1.+amplitude+0.3*sin(n*t);
-
-    return vec2(phi,t);
-}
-
-vec3 sphCoords(vec2 p){
-    float phi=p.x;
-    float theta=p.y;
-
+vec3 sphCoords(float theta, float phi){
     float x=cos(theta)*sin(phi);
     float y=sin(theta)*sin(phi);
     float z=cos(phi);
-
     return vec3(x,y,z);
 }
 
 
 
-vec4 hopfLift(vec3 p){
-    //a lift of the curve on the 2 sphere to S3
-    //such that the lift lives in the S2 det'd by i-comp=0.
-    float x=p.x;
-    float y=p.y;
-    float z=p.z;
-
-    //this has problems when x=-1 but only there
-    float a=sqrt((z+1.)/2.);
-
-    float c=y/(2.*a);
-    float d=x/(2.*a);
-
-    return vec4(a,0,c,d);
-}
-
-
-
-vec4 hopfFiber(vec4 q, float s){
-    //gives a parameterization, in terms of s, of the hopf fiber passing thru p
-    //this is the curve of quaterions e^(is)*p
-
-    //i*p
-    vec4 r=vec4(q.y,-q.x,-q.w,q.z);
-
-    return cos(s)*q+sin(s)*r;
-}
-
-
-vec4 hopfSurface(float t, float s){
-    //t is on curve, s is fiber
-
-    //get coordinates along curve
-    vec2 coords=sphereCurve(t);
-
-    //get point on S2
-    vec3 p=sphCoords(coords);
-
-    //lift to S2 in S3:
-    vec4 q=hopfLift(p);
-
-    //get point along fiber:
-    vec4 r=hopfFiber(q,s);
-
-    return r;
-
+vec3 setInitialData(vec3 v){
+    //turn v=(x,y,z) into a, alpha, c as in our paper
+    v=normalize(v);
+    float c=v.z;
+    float a=sqrt(1.-c*c);
+    float alpha=atan(v.y,v.x);
+    return vec3(a,c,alpha);
 }
 
 
 
 
+
+vec3 nilGeodesic(float a, float c, float alpha,float t){
+    float x=2.*a/c*sin(c*t/2.)*cos(c*t/2.+alpha);
+    float y=2.*a/c*sin(c*t/2.)*sin(c*t/2.+alpha);
+    float z=c*t+0.5*a*a/(c*c)*(c*t-sin(c*t));
+    return vec3(x,z,-y);
+}
+
+vec3 asymptoticExpansion(float a, float c, float alpha, float t){
+
+        // factorize some computations...
+        float cosa = cos(alpha);
+        float sina = sin(alpha);
+        float t1 = t;
+        float t2 = t1 * t;
+        float t3 = t2 * t;
+        float t4 = t3 * t;
+        float t5 = t4 * t;
+        float t6 = t5 * t;
+        float t7 = t6 * t;
+        float t8 = t7 * t;
+        float t9 = t8 * t;
+
+        float c1 = c;
+        float c2 = c1 * c;
+        float c3 = c2 * c;
+        float c4 = c3 * c;
+        float c5 = c4 * c;
+        float c6 = c5 * c;
+        float c7 = c6 * c;
+
+        float x=
+        a * t1 * cosa
+        - (1. / 2.) * a * t2 * c1 * sina
+        - (1. / 6.) * a * t3 * c2 * cosa
+        + (1. / 24.) * a * t4 * c3 * sina
+        + (1. / 120.) * a * t5 * c4 * cosa
+        - (1. / 720.) * a * t6 * c5 * sina
+        - (1. / 5040.) * a * t7 * c6 * cosa
+        + (1. / 40320.) * a * t8 * c7 * sina;
+
+        float y=a * t * sina
+        + (1. / 2.) * a * t2 * c1 * cosa
+        - (1. / 6.) * a * t3 * c2 * sina
+        - (1. / 24.) * a * t4 * c3 * cosa
+        + (1. / 120.) * a * t5 * c4 * sina
+        + (1. / 720.) * a * t6 * c5 * cosa
+        - (1. / 5040.) * a * t7 * c6 * sina
+        - (1. / 40320.) * a * t8 * c7 * cosa;
+
+        float z=(1. / 12.) * (a * a * t3 + 12. * t1) * c1
+        - (1. / 240.) * a * a * t5 * c3
+        + (1. / 10080.) * a * a * t7 * c5
+        - (1. / 725760.) * a * a * t9 * c7;
+
+    return vec3(x,z,-y);
+}
+
+
+
+
+vec3 flow(vec3 v, float t){
+    vec3 ini=setInitialData(v);
+    float a=ini.x;
+    float c=ini.y;
+    float alpha=ini.z;
+
+    if(abs(c*t)<0.01){
+        return asymptoticExpansion(a,c,alpha,t);
+    }
+
+    return nilGeodesic(a,c,alpha,t);
+
+}
+
+
+float areaDensity(vec3 v, float t){
+    vec3 ini=setInitialData(v);
+    float L=t*ini.x;
+    float z=t*ini.y;
+    float alpha=ini.z;
+    float r=t*length(v);
+
+    float z4=z*z*z*z;
+    return 2.*r*r/z4*abs(sin(z/2.))*abs(L*L*z*cos(z/2.)-2.*r*r*sin(z/2.));
+}
 
 //=============================================
 //Functions to Export
@@ -226,15 +155,15 @@ vec3 displace(vec3 params){
     //params arive in (-0.5,0.5)^2: need to rescale
     params+=vec3(0.5,0.5,0.);
     //now in [0,1]^2: scale orrrectly for torus:
-    float t=2.*PI*params.x;
-    float s=2.*PI*params.y;
-    vec4 p;
+    float theta=4./3.*PI*params.x;
+    float phi=PI*params.y;
 
-    //get the point on the surface:
-    p=hopfSurface(t, s);
+    vec3 v=sphCoords(theta,phi);
+    float dist=50.*amplitude;
+    vec3 p=flow(v,dist);
 
-    //project to R3:
-    vec3 q=combinedProj(p);
+    float sgn=p.y/abs(p.y);
+    p.y=sgn*pow(abs(p.y),0.7);
 
-    return q;
+    return p;
 }
