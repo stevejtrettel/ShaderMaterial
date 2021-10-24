@@ -128,7 +128,7 @@ function createBkgScene() {
 
     bkgScene.scene.add(bkgScene.room);
 
-    bkgScene.mainLight = new THREE.PointLight(0xffffff, 0.5, 0, 2);
+    bkgScene.mainLight = new THREE.PointLight(0xffffff, 0.04, 0, 2);
 
     bkgScene.scene.add(bkgScene.mainLight);
 

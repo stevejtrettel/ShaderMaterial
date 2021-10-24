@@ -61,7 +61,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     //t is theta and s is phi in spherical coordinates
     vec3 v=sphCoords(t,s);
-    float dist=50.*amplitude;
+    float dist=50.*amplitude*(1.+sin(tumble*time));
     float dens=areaDensity(v,dist);
 
     float rad=0.8;

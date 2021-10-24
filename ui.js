@@ -28,11 +28,11 @@ let ui = {
         window.open('./about.html');
     },
 
-    rotx:0,
+    rotx:0.6,
     roty:0,
     rotu:0,
     tumble: 0.,
-    grid:0.5,
+    grid:0.1,
     hue:1,
 
     n:3,
@@ -59,27 +59,28 @@ function createUI() {
 
     mainMenu.width = 300;
     mainMenu.domElement.style.userSelect = 'none';
-    mainMenu.add(ui, 'AboutThis').name("Help/About");
+   //mainMenu.add(ui, 'AboutThis').name("Help/About");
 
 
-    mainMenu.add(ui,'n',0,7,1).name('folds');
-    mainMenu.add(ui,'amplitude',0,1,0.01).name('amplitude');
+    //mainMenu.add(ui,'n',0,7,1).name('folds');
+    mainMenu.add(ui,'amplitude',0,1,0.01).name('radius');
+    mainMenu.add(ui,'tumble',0,1,0.01).name('animate');
+    mainMenu.add(ui,'rotx',0,1,0.01).name('theta');
 
     let more = mainMenu.addFolder('More');
         more.add(ui,'grid',0,1,0.01).name('grid');
-        more.add(ui,'hue',0,1,0.01).name('hue');
+        //more.add(ui,'hue',0,1,0.01).name('hue');
         more.add(ui,'transmission',0,1,0.01);
 
         // more.add(ui,'tumble',0,1,0.01).name('tumble');
-        more.add(ui,'rotx',0,1,0.01).name('rotx');
-        more.add(ui,'roty',0,1,0.01).name('roty');
-        more.add(ui,'rotu',0,1,0.01).name('rotu');
-
+    //     more.add(ui,'rotx',0,1,0.01).name('rotx');
+    //     more.add(ui,'roty',0,1,0.01).name('roty');
+    //     more.add(ui,'rotu',0,1,0.01).name('rotu');
+    //     more.add(ui,'tumble',0,1,0.01).name('animate');
         more.add(ui, 'proj', {
-        'Stereographic': 0,
-        'Perspective': 1,
-            'Orthographic': 2
-    }).name('Projection');
+        'Heisenberg': 0,
+        'RotInvariant': 1,
+    }).name('Model');
 
     more.close();
 }

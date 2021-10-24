@@ -61,7 +61,14 @@ vec3 nilGeodesic(float a, float c, float alpha,float t){
     float x=2.*a/c*sin(c*t/2.)*cos(c*t/2.+alpha);
     float y=2.*a/c*sin(c*t/2.)*sin(c*t/2.+alpha);
     float z=c*t+0.5*a*a/(c*c)*(c*t-sin(c*t));
-    return vec3(x,z,-y);
+
+    if(proj==0){
+        return vec3(x,z+0.5*x*y,-y);
+    }
+    else{
+        return vec3(x,z,-y);
+    }
+
 }
 
 vec3 asymptoticExpansion(float a, float c, float alpha, float t){
@@ -111,7 +118,14 @@ vec3 asymptoticExpansion(float a, float c, float alpha, float t){
         + (1. / 10080.) * a * a * t7 * c5
         - (1. / 725760.) * a * a * t9 * c7;
 
-    return vec3(x,z,-y);
+        if(proj==0){
+            return vec3(x,z+0.5*x*y,-y);
+        }
+    else{
+            return vec3(x,z,-y);
+        }
+
+
 }
 
 
@@ -123,7 +137,7 @@ vec3 flow(vec3 v, float t){
     float c=ini.y;
     float alpha=ini.z;
 
-    if(abs(c*t)<0.01){
+    if(abs(c*t)<0.1){
         return asymptoticExpansion(a,c,alpha,t);
     }
 
@@ -143,6 +157,15 @@ float areaDensity(vec3 v, float t){
     return 2.*r*r/z4*abs(sin(z/2.))*abs(L*L*z*cos(z/2.)-2.*r*r*sin(z/2.));
 }
 
+
+vec3 toHeisenberg(vec3 p){
+    //this is after we have swapped the y and z axes
+    float x=p.x;
+    float z=p.z;
+    float y=p.y+0.5*x*z;
+    return vec3(x,y,z);
+}
+
 //=============================================
 //Functions to Export
 //=============================================
@@ -155,13 +178,17 @@ vec3 displace(vec3 params){
     //params arive in (-0.5,0.5)^2: need to rescale
     params+=vec3(0.5,0.5,0.);
     //now in [0,1]^2: scale orrrectly for torus:
-    float theta=4./3.*PI*params.x;
+    float theta=2.*rotx*PI*params.x;
     float phi=PI*params.y;
 
     vec3 v=sphCoords(theta,phi);
-    float dist=50.*amplitude;
+    float dist=50.*amplitude*(1.+sin(tumble*time));
     vec3 p=flow(v,dist);
 
+    //apply the change to heisenberg model
+    //p=toHeisenberg(p);
+
+    //rescale the y coordinate
     float sgn=p.y/abs(p.y);
     p.y=sgn*pow(abs(p.y),0.7);
 
